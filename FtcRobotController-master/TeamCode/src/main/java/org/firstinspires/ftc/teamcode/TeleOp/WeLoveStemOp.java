@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.TeleOp;
 
 import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Gamepad;
@@ -28,8 +29,20 @@ public class WeLoveStemOp extends LinearOpMode {
 
 
         waitForStart();
+
+        if(isStopRequested()) return;
+
         while(opModeIsActive()){
-            //game loop
+            // Drive code, check the direction on these
+            myRobot.drive.setWeightedDrivePower(
+                    new Pose2d(
+                            -driverPad.left_stick_x,
+                            -driverPad.left_stick_x,
+                            -driverPad.right_stick_x
+                    )
+            );
+            myRobot.drive.update();
+
         }
     }
 }
