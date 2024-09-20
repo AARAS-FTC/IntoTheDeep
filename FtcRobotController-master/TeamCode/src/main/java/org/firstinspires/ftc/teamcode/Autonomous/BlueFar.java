@@ -8,7 +8,6 @@ import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.teamcode.DeepRobot;
 import org.firstinspires.ftc.teamcode.Autonomous.enums.ParkingMode;
 import org.firstinspires.ftc.teamcode.Autonomous.enums.PropPosition;
-import org.firstinspires.ftc.teamcode.SubSystems.TensorFlow;
 
 @Autonomous(name = "Blue Far", group = "Linear OpMode")
 public class BlueFar extends LinearOpMode {

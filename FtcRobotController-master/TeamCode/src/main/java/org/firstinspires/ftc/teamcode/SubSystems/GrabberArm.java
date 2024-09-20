@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.SubSystems;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -8,13 +9,18 @@ import com.qualcomm.robotcore.hardware.Servo;
 public class GrabberArm {
 	private Servo claw = null;
 	private Servo wrist = null;
-	private DcMotor arm = null;
+	private DcMotorEx arm = null;
+
+	public static final double NEW_P = 2.5;
+	public static final double NEW_I = 0.1;
+	public static final double NEW_D = 0.2;
+
 	private GrabberState grabberState = GrabberState.CLOSED;
 
 	public GrabberArm(HardwareMap hm){
 		claw = hm.get(Servo.class, "claw");
 		wrist = hm.get(Servo.class, "wrist");
-		arm = hm.get(DcMotor.class, "arm");
+		arm = hm.get(DcMotorEx.class, "arm");
 
 		arm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 		arm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -41,7 +47,7 @@ public class GrabberArm {
 	}
 
 	public void changeArmPosition(int pos){
-		//if arm is at bottom dont move
+		//if arm is at bottom don't move
 		if(pos < 0 && arm.getCurrentPosition() < 0) return;
 
 		double power = 0.3;
