@@ -18,7 +18,6 @@ import java.util.List;
 public class DrawRectangleProcessor implements VisionProcessor {
 
     // Define an array to hold the rectangles
-    private Rect[] gridRects = new Rect[9];
     private List<String> redPixelCoordinates = new ArrayList<>();
 
     // Variables for the first red pixel found
@@ -28,25 +27,12 @@ public class DrawRectangleProcessor implements VisionProcessor {
     private Mat filteredFrame = new Mat();  // Mat for holding the filtered frame
     private int IntakeLocX = 320; // Example value for center
     private int IntakeLocY = 400; // Example value for center
+    private Mat redMask = new Mat();  // Declare redMask as a class-level variable
+
 
     @Override
     public void init(int width, int height, CameraCalibration calibration) {
         // Width and height of the frame
-        int frameWidth = 640;
-        int frameHeight = 480;
-
-        // Calculate the width and height of each grid cell
-        int cellWidth = frameWidth / 3;
-        int cellHeight = frameHeight / 3;
-
-        // Create the 9 rectangles for the 3x3 grid
-        for (int row = 0; row < 3; row++) {
-            for (int col = 0; col < 3; col++) {
-                int x = col * cellWidth;
-                int y = row * cellHeight;
-                gridRects[row * 3 + col] = new Rect(x, y, cellWidth, cellHeight);
-            }
-        }
     }
 
     @Override
@@ -68,8 +54,7 @@ public class DrawRectangleProcessor implements VisionProcessor {
         Core.inRange(hsvFrame, lowerRed1, upperRed1, redMask1);
         Core.inRange(hsvFrame, lowerRed2, upperRed2, redMask2);
 
-        // Combine the red masks
-        Mat redMask = new Mat();
+        // Combine the red masks and store in class-level redMask
         Core.addWeighted(redMask1, 1.0, redMask2, 1.0, 0.0, redMask);
 
         // Clear previous red pixel coordinates only if first red pixel wasn't found
@@ -122,11 +107,6 @@ public class DrawRectangleProcessor implements VisionProcessor {
         rectPaint.setStyle(Paint.Style.STROKE);
         rectPaint.setStrokeWidth(scaleCanvasDensity * 4);
 
-        // Draw each of the 9 rectangles on the canvas
-        for (Rect rect : gridRects) {
-            canvas.drawRect(makeGraphicsRect(rect, scaleBmpPxToCanvasPx), rectPaint);
-        }
-
         // Draw a blue square around the first red pixel found
         if (firstRedPixelX != -1 && firstRedPixelY != -1) {
             Paint bluePaint = new Paint();
@@ -140,7 +120,7 @@ public class DrawRectangleProcessor implements VisionProcessor {
             canvas.drawRect(left * scaleBmpPxToCanvasPx, top * scaleBmpPxToCanvasPx, right * scaleBmpPxToCanvasPx, bottom * scaleBmpPxToCanvasPx, bluePaint);
 
             // Draw rectangles in intercardinal directions
-            drawIntercardinalRectangles(canvas, firstRedPixelX, firstRedPixelY, scaleBmpPxToCanvasPx);
+            drawRotatedRectangles(canvas, firstRedPixelX, firstRedPixelY, scaleBmpPxToCanvasPx);
         }
 
         // Draw a 5x5 yellow square at the search origin
@@ -155,36 +135,63 @@ public class DrawRectangleProcessor implements VisionProcessor {
         canvas.drawRect(originLeft * scaleBmpPxToCanvasPx, originTop * scaleBmpPxToCanvasPx, originRight * scaleBmpPxToCanvasPx, originBottom * scaleBmpPxToCanvasPx, yellowPaint);
     }
 
-    private void drawIntercardinalRectangles(Canvas canvas, int pivotX, int pivotY, float scaleBmpPxToCanvasPx) {
+    private void drawRotatedRectangles(Canvas canvas, int pivotX, int pivotY, float scaleBmpPxToCanvasPx) {
         Paint rectPaint = new Paint();
-        rectPaint.setColor(Color.YELLOW); // Set the color for the outlines
+        rectPaint.setColor(Color.BLUE); // Set the color for the outlines
         rectPaint.setStyle(Paint.Style.STROKE); // Set to STROKE for outlines
         rectPaint.setStrokeWidth(4); // Adjust the stroke width as needed
 
         // Define the size of the rectangles
-        int rectWidth = 64;
-        int rectHeight = 20;
+        int rectWidth = 46;
+        int rectHeight = 22;
 
-        // Calculate the positions of the rectangles in intercardinal directions
-        int[][] directions = {
-                {0, -rectHeight},    // North
-                {rectWidth / 2, -rectHeight / 2}, // Northeast
-                {rectWidth, 0},      // East
-                {rectWidth / 2, rectHeight / 2},   // Southeast
-                {0, rectHeight},     // South
-                {-rectWidth / 2, rectHeight / 2},  // Southwest
-                {-rectWidth, 0},     // West
-                {-rectWidth / 2, -rectHeight / 2}  // Northwest
-        };
+        // Define the center of rotation, which is the first red pixel
+        float pivotXCanvas = pivotX * scaleBmpPxToCanvasPx;
+        float pivotYCanvas = pivotY * scaleBmpPxToCanvasPx;
 
-        // Draw each rectangle
-        for (int[] direction : directions) {
-            int left = pivotX + direction[0] - rectWidth / 2;
-            int top = pivotY + direction[1] - rectHeight / 2;
-            int right = left + rectWidth;
-            int bottom = top + rectHeight;
-            canvas.drawRect(left * scaleBmpPxToCanvasPx, top * scaleBmpPxToCanvasPx, right * scaleBmpPxToCanvasPx, bottom * scaleBmpPxToCanvasPx, rectPaint);
+        // Loop through to draw 6 rectangles, each rotated by 45 degrees more than the last
+        for (int i = 0; i < 7; i++) {
+            // Save the canvas state before applying transformations
+            canvas.save();
+
+            // Rotate the canvas by 45 degrees * i around the bottom-left corner (pivotX, pivotY)
+            canvas.rotate(45 * i, pivotXCanvas, pivotYCanvas);
+
+            // Draw the rectangle with its bottom-left corner at (pivotX, pivotY)
+            float left = pivotXCanvas;
+            float top = pivotYCanvas - rectHeight * scaleBmpPxToCanvasPx;
+            float right = left + rectWidth * scaleBmpPxToCanvasPx;
+            float bottom = pivotYCanvas;
+
+            // Draw the rectangle
+            canvas.drawRect(left, top, right, bottom, rectPaint);
+
+            // Restore the canvas to the state before the rotation for the next rectangle
+            canvas.restore();
         }
+    }
+
+    private int countRedPixelsInRect(Rect rect) {
+        int redPixelCount = 0;
+
+        // Iterate over each pixel in the rectangle's area
+        for (int y = rect.y; y < rect.y + rect.height; y++) {
+            for (int x = rect.x; x < rect.x + rect.width; x++) {
+                if (isRedPixel(x, y)) {
+                    redPixelCount++;
+                }
+            }
+        }
+
+        return redPixelCount;
+    }
+
+    private boolean isRedPixel(int x, int y) {
+        // Check if the pixel is red in the red mask (ensure this matches your red detection logic)
+        if (x >= 0 && x < redMask.cols() && y >= 0 && y < redMask.rows()) {
+            return redMask.get(y, x)[0] > 0;  // Assumes redMask is a single channel binary mask
+        }
+        return false;
     }
 
 }
