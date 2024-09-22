@@ -1,0 +1,14 @@
+<component name="libraryTable">
+  <library name="Gradle: org.firstinspires.ftc:gameAssets-CenterStage:1.0.0@aar">
+    <CLASSES>
+      <root url="file://$PROJECT_DIR$/../.gradle/caches/transforms-3/08ccb3fe4a27dba9df3cee8ceab2ee1c/transformed/gameAssets-CenterStage-1.0.0/AndroidManifest.xml" />
+      <root url="jar://$PROJECT_DIR$/../.gradle/caches/transforms-3/08ccb3fe4a27dba9df3cee8ceab2ee1c/transformed/gameAssets-CenterStage-1.0.0/jars/classes.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$PROJECT_DIR$/../.gradle/caches/modules-2/files-2.1/org.firstinspires.ftc/gameAssets-CenterStage/1.0.0/f4cc2cd2148a13d569c39b77fec7c3d85892b09/gameAssets-CenterStage-1.0.0-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$PROJECT_DIR$/../.gradle/caches/modules-2/files-2.1/org.firstinspires.ftc/gameAssets-CenterStage/1.0.0/f4cc2cd2148a13d569c39b77fec7c3d85892b09/gameAssets-CenterStage-1.0.0-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

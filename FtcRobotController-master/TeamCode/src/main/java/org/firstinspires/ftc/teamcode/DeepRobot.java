@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.robot.Robot;
@@ -19,13 +20,12 @@ public class DeepRobot {
 	//contains all the code for interacting with the robots functions
 	private ElapsedTime runtime = new ElapsedTime();
 	private ElapsedTime mechTimer = new ElapsedTime();
-	private DcMotor leftFrontDrive = null;
-	private DcMotor leftBackDrive = null;
-	private DcMotor rightFrontDrive = null;
-	private DcMotor rightBackDrive = null;
-
-	private  HardwareMap hardwareMap;
-	private  Telemetry telemetry;
+	private DcMotorEx frontLeft = null;
+	private DcMotorEx backLeft = null;
+	private DcMotorEx frontRight = null;
+	private DcMotorEx backRight = null;
+	private HardwareMap hardwareMap;
+	private Telemetry telemetry;
 
 	private WebcamName camera;
 	private VisionPortal visionPortal;
@@ -49,6 +49,28 @@ public class DeepRobot {
 	 */
 	public void update(){
 		telemetry();
+	}
+
+	private void setDrive(){
+		frontLeft = hardwareMap.get(DcMotorEx.class, "left_front");
+		backLeft = hardwareMap.get(DcMotorEx.class, "left_back");
+		frontRight = hardwareMap.get(DcMotorEx.class, "right_front");
+		backRight = hardwareMap.get(DcMotorEx.class, "right_back");
+
+		frontLeft.setDirection(DcMotor.Direction.REVERSE);
+		backLeft.setDirection(DcMotor.Direction.REVERSE);
+		frontRight.setDirection(DcMotor.Direction.FORWARD);
+		backRight.setDirection(DcMotor.Direction.FORWARD);
+
+		frontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+		frontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+		backLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+		backRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+		frontLeft.setTargetPositionTolerance(3);
+		frontRight.setTargetPositionTolerance(3);
+		backRight.setTargetPositionTolerance(3);
+		backLeft.setTargetPositionTolerance(3);
 	}
 
 	/**

@@ -2,7 +2,15 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/IntoTheDeep.iml" filepath="$PROJECT_DIR$/.idea/IntoTheDeep.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/IntoTheDeep.iml" filepath="$PROJECT_DIR$/.idea/modules/IntoTheDeep.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/FtcRobotController/IntoTheDeep.FtcRobotController.iml" filepath="$PROJECT_DIR$/.idea/modules/FtcRobotController/IntoTheDeep.FtcRobotController.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/FtcRobotController/IntoTheDeep.FtcRobotController.androidTest.iml" filepath="$PROJECT_DIR$/.idea/modules/FtcRobotController/IntoTheDeep.FtcRobotController.androidTest.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/FtcRobotController/IntoTheDeep.FtcRobotController.main.iml" filepath="$PROJECT_DIR$/.idea/modules/FtcRobotController/IntoTheDeep.FtcRobotController.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/FtcRobotController/IntoTheDeep.FtcRobotController.unitTest.iml" filepath="$PROJECT_DIR$/.idea/modules/FtcRobotController/IntoTheDeep.FtcRobotController.unitTest.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/TeamCode/IntoTheDeep.TeamCode.iml" filepath="$PROJECT_DIR$/.idea/modules/TeamCode/IntoTheDeep.TeamCode.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/TeamCode/IntoTheDeep.TeamCode.androidTest.iml" filepath="$PROJECT_DIR$/.idea/modules/TeamCode/IntoTheDeep.TeamCode.androidTest.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/TeamCode/IntoTheDeep.TeamCode.main.iml" filepath="$PROJECT_DIR$/.idea/modules/TeamCode/IntoTheDeep.TeamCode.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/TeamCode/IntoTheDeep.TeamCode.unitTest.iml" filepath="$PROJECT_DIR$/.idea/modules/TeamCode/IntoTheDeep.TeamCode.unitTest.iml" />
     </modules>
   </component>
 </project>
