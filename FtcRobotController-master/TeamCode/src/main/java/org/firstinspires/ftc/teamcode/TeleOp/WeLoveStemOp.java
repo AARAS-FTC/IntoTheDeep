@@ -41,7 +41,7 @@ public class WeLoveStemOp extends OpMode {
 
     @Override
     public void loop() {
-        // Drive code, check the direction on these
+        // TODO Drive code, check the direction on joysticks
         myRobot.drive.setWeightedDrivePower(
                 new Pose2d(
                         -driverPad.left_stick_x,
