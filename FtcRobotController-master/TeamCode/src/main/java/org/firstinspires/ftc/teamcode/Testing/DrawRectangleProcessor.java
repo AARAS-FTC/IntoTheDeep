@@ -10,7 +10,10 @@ import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.Rect;
 import org.opencv.core.Scalar;
+import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
+import org.opencv.core.Point;
+import org.opencv.core.RotatedRect;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -137,61 +140,108 @@ public class DrawRectangleProcessor implements VisionProcessor {
 
     private void drawRotatedRectangles(Canvas canvas, int pivotX, int pivotY, float scaleBmpPxToCanvasPx) {
         Paint rectPaint = new Paint();
-        rectPaint.setColor(Color.BLUE); // Set the color for the outlines
-        rectPaint.setStyle(Paint.Style.STROKE); // Set to STROKE for outlines
-        rectPaint.setStrokeWidth(4); // Adjust the stroke width as needed
+        rectPaint.setStyle(Paint.Style.STROKE);
+        rectPaint.setStrokeWidth(4);
 
-        // Define the size of the rectangles
-        int rectWidth = 46;
+        int rectWidth = 32;
         int rectHeight = 22;
 
-        // Define the center of rotation, which is the first red pixel
+        // Convert pivot coordinates to canvas coordinates
         float pivotXCanvas = pivotX * scaleBmpPxToCanvasPx;
         float pivotYCanvas = pivotY * scaleBmpPxToCanvasPx;
 
-        // Loop through to draw 6 rectangles, each rotated by 45 degrees more than the last
-        for (int i = 0; i < 7; i++) {
-            // Save the canvas state before applying transformations
-            canvas.save();
+        RotatedRect maxRedPixelRect = null;
+        int maxRedPixelCount = -1;
 
-            // Rotate the canvas by 45 degrees * i around the bottom-left corner (pivotX, pivotY)
-            canvas.rotate(45 * i, pivotXCanvas, pivotYCanvas);
+        // Loop to draw 6 rectangles, each rotated by 45 degrees
+        for (int i = 0; i < 6; i++) {
+            // Define the rotation angle for the current rectangle
+            double angle = 45 * i;
 
-            // Draw the rectangle with its bottom-left corner at (pivotX, pivotY)
-            float left = pivotXCanvas;
-            float top = pivotYCanvas - rectHeight * scaleBmpPxToCanvasPx;
-            float right = left + rectWidth * scaleBmpPxToCanvasPx;
-            float bottom = pivotYCanvas;
+            // Create the rotated rectangle with the bottom-left corner on the pivot
+            Point bottomLeftCorner = new Point(pivotX, pivotY);
+            RotatedRect rotatedRect = new RotatedRect(
+                    bottomLeftCorner, // Center will be recalculated
+                    new Size(rectWidth, rectHeight), // Size of the rectangle
+                    angle // Rotation angle in degrees
+            );
+
+            // Set the position to align the bottom-left corner
+            Point center = new Point(bottomLeftCorner.x + rectWidth / 2.0, bottomLeftCorner.y - rectHeight);
+            rotatedRect = new RotatedRect(center, new Size(rectWidth, rectHeight), angle);
 
             // Draw the rectangle
-            canvas.drawRect(left, top, right, bottom, rectPaint);
+            drawRotatedRectOnCanvas(rotatedRect, canvas, scaleBmpPxToCanvasPx, rectPaint);
 
-            // Restore the canvas to the state before the rotation for the next rectangle
-            canvas.restore();
-        }
-    }
+            // Count red pixels in the rotated rectangle
+            int redPixelCount = countRedPixelsInRotatedRect(rotatedRect);
 
-    private int countRedPixelsInRect(Rect rect) {
-        int redPixelCount = 0;
-
-        // Iterate over each pixel in the rectangle's area
-        for (int y = rect.y; y < rect.y + rect.height; y++) {
-            for (int x = rect.x; x < rect.x + rect.width; x++) {
-                if (isRedPixel(x, y)) {
-                    redPixelCount++;
-                }
+            // Update if this rectangle has more red pixels
+            if (redPixelCount > maxRedPixelCount) {
+                maxRedPixelCount = redPixelCount;
+                maxRedPixelRect = rotatedRect;
             }
         }
 
-        return redPixelCount;
+        // Highlight the rectangle with the most red pixels
+        if (maxRedPixelRect != null) {
+            rectPaint.setColor(Color.GREEN);
+            drawRotatedRectOnCanvas(maxRedPixelRect, canvas, scaleBmpPxToCanvasPx, rectPaint);
+        }
     }
 
-    private boolean isRedPixel(int x, int y) {
-        // Check if the pixel is red in the red mask (ensure this matches your red detection logic)
-        if (x >= 0 && x < redMask.cols() && y >= 0 && y < redMask.rows()) {
-            return redMask.get(y, x)[0] > 0;  // Assumes redMask is a single channel binary mask
+    // Function to draw the rotated rectangle on the canvas
+    private void drawRotatedRectOnCanvas(RotatedRect rotatedRect, Canvas canvas, float scaleBmpPxToCanvasPx, Paint paint) {
+        Point[] vertices = new Point[4];
+        rotatedRect.points(vertices); // Get the 4 vertices of the rotated rectangle
+
+        // Draw the lines connecting the vertices
+        for (int j = 0; j < 4; j++) {
+            float startX = (float) (vertices[j].x * scaleBmpPxToCanvasPx);
+            float startY = (float) (vertices[j].y * scaleBmpPxToCanvasPx);
+            float endX = (float) (vertices[(j + 1) % 4].x * scaleBmpPxToCanvasPx);
+            float endY = (float) (vertices[(j + 1) % 4].y * scaleBmpPxToCanvasPx);
+            canvas.drawLine(startX, startY, endX, endY, paint);
         }
-        return false;
     }
+
+    // Function to count red pixels inside a rotated rectangle
+    private int countRedPixelsInRotatedRect(RotatedRect rotatedRect) {
+        // Get the bounding box of the rotated rectangle
+        Rect boundingRect = rotatedRect.boundingRect();
+
+        // Create a mask for the rotated rectangle
+        Mat mask = Mat.zeros(redMask.size(), redMask.type());
+        Imgproc.ellipse(mask, rotatedRect, new Scalar(255, 255, 255), -1); // Fill the rotated rectangle in the mask
+
+        // Extract the region of interest (ROI) from the redMask using the bounding box
+        Mat roi = new Mat(redMask, boundingRect);
+
+        // Count non-zero pixels (i.e., red pixels) in the mask for the ROI
+        return Core.countNonZero(roi);
+    }
+
+//    private int countRedPixelsInRect(Rect rect) {
+//        int redPixelCount = 0;
+//
+//        // Iterate over each pixel in the rectangle's area
+//        for (int y = rect.y; y < rect.y + rect.height; y++) {
+//            for (int x = rect.x; x < rect.x + rect.width; x++) {
+//                if (isRedPixel(x, y)) {
+//                    redPixelCount++;
+//                }
+//            }
+//        }
+//
+//        return redPixelCount;
+//    }
+
+//    private boolean isRedPixel(int x, int y) {
+//        // Check if the pixel is red in the red mask (ensure this matches your red detection logic)
+//        if (x >= 0 && x < redMask.cols() && y >= 0 && y < redMask.rows()) {
+//            return redMask.get(y, x)[0] > 0;  // Assumes redMask is a single channel binary mask
+//        }
+//        return false;
+//    }
 
 }
