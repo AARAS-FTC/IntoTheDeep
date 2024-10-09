@@ -1,9 +1,11 @@
 package org.firstinspires.ftc.teamcode.TeleOp;
 
 import com.acmerobotics.dashboard.FtcDashboard;
-import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.acmerobotics.dashboard.config.Config;
+//import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -11,6 +13,8 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.DeepRobot;
 
+@Config
+@TeleOp(group = "drive")
 public class WeLoveStemOp extends OpMode {
 
     private static ElapsedTime timer;
@@ -31,8 +35,6 @@ public class WeLoveStemOp extends OpMode {
 
         dashboard = FtcDashboard.getInstance();
 
-        myRobot = new DeepRobot(hardwareMap, telemetry);
-        myRobot.drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 //        myRobot.drive.setPoseEstimate(Pose);
 
         driverPad = gamepad1;
@@ -42,15 +44,15 @@ public class WeLoveStemOp extends OpMode {
     @Override
     public void loop() {
         // TODO Drive code, check the direction on joysticks
-        myRobot.drive.setWeightedDrivePower(
-                new Pose2d(
-                        -driverPad.left_stick_x,
-                        -driverPad.left_stick_y,
-                        -driverPad.right_stick_x
-                )
-        );
-        myRobot.drive.update();
-        telemetryUpdate();
+//        myRobot.drive.setWeightedDrivePower(
+//                new Pose2d(
+//                        -driverPad.left_stick_x,
+//                        -driverPad.left_stick_y,
+//                        -driverPad.right_stick_x
+//                )
+//        );
+//        myRobot.drive.update();
+//        telemetryUpdate();
     }
 }
 

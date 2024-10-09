@@ -9,7 +9,6 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
-import org.firstinspires.ftc.teamcode.RR_drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.SubSystems.GrabberArm;
 import org.firstinspires.ftc.teamcode.SubSystems.GrabberState;
 import org.firstinspires.ftc.teamcode.SubSystems.LinearSlides;
@@ -30,7 +29,7 @@ public class DeepRobot {
 	private WebcamName camera;
 	private VisionPortal visionPortal;
 
-	public SampleMecanumDrive drive;
+//	public SampleMecanumDrive drive;
 
 	/**
 	 * Initialises the robot with all its motors
@@ -41,7 +40,7 @@ public class DeepRobot {
 	public DeepRobot(HardwareMap hardwareMap, Telemetry telemetry){
 		this.hardwareMap = hardwareMap;
 		this.telemetry = telemetry;
-		this.drive = new SampleMecanumDrive(hardwareMap);
+//		this.drive = new SampleMecanumDrive(hardwareMap);
 	}
 
 	/**
