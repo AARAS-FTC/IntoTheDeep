@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.acmerobotics.roadrunner.Pose2d;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -28,8 +29,9 @@ public class DeepRobot {
 
 	private WebcamName camera;
 	private VisionPortal visionPortal;
+	private Pose2d beginPose;
+	public MecanumDrive drive;
 
-//	public SampleMecanumDrive drive;
 
 	/**
 	 * Initialises the robot with all its motors
@@ -40,7 +42,8 @@ public class DeepRobot {
 	public DeepRobot(HardwareMap hardwareMap, Telemetry telemetry){
 		this.hardwareMap = hardwareMap;
 		this.telemetry = telemetry;
-//		this.drive = new SampleMecanumDrive(hardwareMap);
+		this.beginPose = new Pose2d(0, 0, 0);
+		this.drive = new MecanumDrive(hardwareMap,  beginPose);
 	}
 
 	/**
