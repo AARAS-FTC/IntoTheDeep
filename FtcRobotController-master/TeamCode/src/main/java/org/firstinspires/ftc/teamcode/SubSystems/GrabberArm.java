@@ -81,13 +81,9 @@ public class GrabberArm implements Subsystem{
 	public void extendActuator(double pos){
 		if(pos < 0.17){
 			actuator.setPosition(0.17);
-		} else if (pos > 0.82) {
-			actuator.setPosition(0.82);
-		}else {
-			actuator.setPosition(pos);
-		}
+		} else actuator.setPosition(Math.min(pos, 0.82));
 	}
-	
+
 	public void manualPower(){
 		arm.setPower(0.05);
 	}

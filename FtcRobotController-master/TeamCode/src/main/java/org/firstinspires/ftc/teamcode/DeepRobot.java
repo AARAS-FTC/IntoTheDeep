@@ -26,8 +26,6 @@ public class DeepRobot {
 	private GrabberArm grabberArm;
 	private LinearSlides linearSlides;
 
-	private WebcamName camera;
-	private VisionPortal visionPortal;
 	private Pose2d beginPose;
 	public MecanumDrive drive;
 	private MechanismState mechanismState = MechanismState.INIT;
@@ -119,16 +117,13 @@ public class DeepRobot {
 		frontRight.setPower(rightFrontPower * currentSpeedLimit);
 		backLeft.setPower(leftBackPower * currentSpeedLimit);
 		backRight.setPower(rightBackPower * currentSpeedLimit);
-		double[] drivePower = {leftFrontPower, rightFrontPower, leftBackPower, rightBackPower};
-		return drivePower;
+        return new double[]{leftFrontPower, rightFrontPower, leftBackPower, rightBackPower};
 	}
-
-	float scale;
 
 	/**
 	 * Drive forwards for targetSeconds
 	 */
-	public void driveForward(int cm){
+	public void driveForward(){
 		drive(1, 0 ,0);
 
 	}
@@ -181,11 +176,8 @@ public class DeepRobot {
 	public void startPosition(){
 		driveStop();
 		grabberArm.closeClaw();
-		mechanismState = MechanismState.INIT;
-		//set Arm position to bottom
-		grabberArm.setArmPosition(280);
-		// set Wrist to fold up
-		grabberArm.setWristPosition(1);
+		// TODO Start Position of Robot
+
 	}
 
 	/**
@@ -193,111 +185,7 @@ public class DeepRobot {
 	 */
 	public void drivePosition(){
 		driveStop();
-		//Other logic here
-	}
-
-	public void pushPosition(){
-		grabberArm.closeClaw();
-		grabberArm.setArmPosition(200);
-		grabberArm.manualPower();
-		grabberArm.setWristPosition(0);
-		linearSlides.bottomPosition();
-		grabberArm.setArmPosition(20);
-	}
-
-	/**
-	 * mechanism position when you need to pickup the pixel
-	 */
-	public void pickupPosition(){
-		driveStop();
-		if(mechanismState == MechanismState.PICKUP) return;
-		mechanismState = MechanismState.PICKUP;
-
-		grabberArm.setArmPosition(200);
-		grabberArm.manualPower();
-		grabberArm.setWristPosition(0);
-		linearSlides.bottomPosition();
-		grabberArm.setArmPosition(20);
-		grabberArm.openClaw();
-	}
-
-	/**
-	 * Mechanism position between drop and pickup
-	 */
-	public void topPosition(){
-		driveStop();
-		if(mechanismState == MechanismState.TOP_POSITION) return;
-		mechanismState = MechanismState.TOP_POSITION;
-
-		grabberArm.setWristPosition(0);
-		grabberArm.closeClaw();
-		grabberArm.setArmPosition(520);
-		linearSlides.topPosition();
-	}
-
-	/**
-	 * mechanism position for dropping pixel
-	 */
-	public void dropPosition(){
-		driveStop();
-		if(mechanismState == MechanismState.DROP_POSITION) return;
-		mechanismState = MechanismState.DROP_POSITION;
-		grabberArm.setWristPosition(0.25);
-
-		grabberArm.closeClaw();
-
-		grabberArm.setArmPosition(1000);
-
-		linearSlides.topPosition();
-	}
-
-	/**
-	 * Raise arms and put them in position for climb
-	 */
-	public void raiseHooks(){
-		driveStop();
-		linearSlides.climbPosition() ;
-	}
-
-	/**
-	 * lower climb so that robot climbs up
-	 */
-	public void climb(){
-		driveStop();
-		linearSlides.climb(1);
-	}
-
-	/**
-	 * Lower the robot after climb
-	 *
-	 */
-
-	public void reset(){
-		linearSlides.reset();
-	}
-
-	/**
-	 * for adjusting linear slide pickup and drop off
-	 */
-	public void adjustSlides(int pos){
-		driveStop();
-		linearSlides.changePosition(pos);
-	}
-
-	/**
-	 * open claw
-	 */
-	public void openClaw(){
-		driveStop();
-		grabberArm.openClaw();
-	}
-
-	/**
-	 * close claw
-	 */
-	public void closeClaw(){
-		driveStop();
-		grabberArm.closeClaw();
+		// TODO Other logic here
 	}
 
 	/**
