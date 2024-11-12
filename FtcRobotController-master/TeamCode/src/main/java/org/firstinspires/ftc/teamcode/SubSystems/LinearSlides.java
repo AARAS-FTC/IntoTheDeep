@@ -3,96 +3,98 @@ package org.firstinspires.ftc.teamcode.SubSystems;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
-public class LinearSlides {
-    //Motors
+import org.firstinspires.ftc.teamcode.RobotMode;
+
+public class LinearSlides implements Subsystem{
     private DcMotor leftLinearSlide;
     private DcMotor rightLinearSlide;
+    private static final int MAX_POSITION = 1550;
+    private static final int MIN_POSITION = 0;
 
-    public LinearSlides(HardwareMap hm){
+    // PID coefficients
+    private double kP = 0.005;
+    private double kI = 0.0001;
+    private double kD = 0.001;
+
+    private boolean usePID = true; // Toggle for enabling/disabling PID control
+
+    private int targetPosition;
+    private double integralSum = 0;
+    private double lastError = 0;
+    private ElapsedTime timer = new ElapsedTime();
+
+    @Override
+    public void runCommand(RobotMode mode) {
+
+    }
+
+    public LinearSlides(HardwareMap hm) {
         leftLinearSlide = hm.get(DcMotor.class, "l_linear_slides");
         rightLinearSlide = hm.get(DcMotor.class, "r_linear_slides");
 
-        //direction of motors
         leftLinearSlide.setDirection(DcMotorSimple.Direction.FORWARD);
         rightLinearSlide.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        // Set the motors to run with encoders.
-        leftLinearSlide.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        rightLinearSlide.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-
-        // Reset encoders
+        // Reset encoders before setting mode
         leftLinearSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rightLinearSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        // Hold position
+        leftLinearSlide.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightLinearSlide.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
         leftLinearSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightLinearSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     }
 
-    /**
-     * Change Position
-     * INPUT: pos - change we want from current position
-     * Move the linear slide up or down from current position
-     */
-    public void changePosition(int pos){
+    private void applyPIDControl() {
+        double error = targetPosition - leftLinearSlide.getCurrentPosition();
+        integralSum += error * timer.seconds();
+        double derivative = (error - lastError) / timer.seconds();
 
-        // do nothing if linear slides are already at the bottom or top
-        int newPos = Math.max(getPosition()[0], getPosition()[1]) + pos;
-        if((pos > 0 && newPos > 1550) || (pos < 0 && newPos < 0)) return;
-
-        double power = 0.6;
-        leftLinearSlide.setTargetPosition(leftLinearSlide.getCurrentPosition() + pos);
-        rightLinearSlide.setTargetPosition(rightLinearSlide.getCurrentPosition() + pos);
-
-        leftLinearSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        rightLinearSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        double power = (kP * error) + (kI * integralSum) + (kD * derivative);
 
         leftLinearSlide.setPower(power);
         rightLinearSlide.setPower(power);
 
-        // Stop the motors after reaching the position
-        leftLinearSlide.setPower(0.1);
-        rightLinearSlide.setPower(0.1);
-
-        // Switch back to RUN_USING_ENCODER mode
-//        leftLinearSlide.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-//        rightLinearSlide.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        lastError = error;
+        timer.reset();
     }
 
-    private void setPosition(int pos){
-        leftLinearSlide.setTargetPosition(pos);
-        rightLinearSlide.setTargetPosition(pos);
+    public void changePosition(int pos) {
+        int currentPosition = Math.max(getPosition()[0], getPosition()[1]);
+        int newPos = currentPosition + pos;
 
-        leftLinearSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        rightLinearSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        if (newPos > MAX_POSITION || newPos < MIN_POSITION) return;
 
-        leftLinearSlide.setPower(0.8);
-        rightLinearSlide.setPower(0.8);
-
-        // Stop the motors after reaching the position
-        leftLinearSlide.setPower(0.1);
-        rightLinearSlide.setPower(0.1);
+        targetPosition = newPos;
+        if (usePID) {
+            applyPIDControl();
+        } else {
+            setTargetPositionDirect(targetPosition, 0.6);
+        }
     }
 
-    public void bottomPosition(){
-        setPosition(0);
+    public void setTargetPosition(int position, double power) {
+        targetPosition = position;
+        if (usePID) {
+            // Use PID control to reach the target position
+            while (Math.abs(targetPosition - leftLinearSlide.getCurrentPosition()) > 10) { // tolerance of 10 counts
+                applyPIDControl();
+            }
+            // Stop motors once the target position is reached within tolerance
+            leftLinearSlide.setPower(0);
+            rightLinearSlide.setPower(0);
+        } else {
+            // Direct power control if PID is disabled
+            setTargetPositionDirect(position, power);
+        }
     }
 
-    public void topPosition(){
-        setPosition(1200);
-    }
-
-    public void climbPosition(){
-        setPosition(1240);
-    }
-
-    public void climb(double power){
-        leftLinearSlide.setPower(power);
-        rightLinearSlide.setPower(power);
-        leftLinearSlide.setTargetPosition(300);
-        rightLinearSlide.setTargetPosition(300);
+    private void setTargetPositionDirect(int position, double power) {
+        leftLinearSlide.setTargetPosition(position);
+        rightLinearSlide.setTargetPosition(position);
 
         leftLinearSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         rightLinearSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -101,31 +103,33 @@ public class LinearSlides {
         rightLinearSlide.setPower(power);
     }
 
-    public void reset(){
-        leftLinearSlide.setTargetPosition(1400);
-        rightLinearSlide.setTargetPosition(1400);
-
-        leftLinearSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        rightLinearSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-        leftLinearSlide.setPower(0.4);
-        rightLinearSlide.setPower(0.4);
-
-
-        // Stop the motors after reaching the position
-        leftLinearSlide.setPower(0.1);
-        rightLinearSlide.setPower(0.1);
+    public void bottomPosition() {
+        setTargetPosition(MIN_POSITION, 0.8);
     }
 
-    public void manualDrive(boolean up){
-        double power = 0.1;
-        if(!up) power = -0.1;
+    public void topPosition() {
+        setTargetPosition(1200, 0.8);
+    }
+
+    public void climbPosition() {
+        setTargetPosition(1240, 0.8);
+    }
+
+    public void climb(double power) {
+        setTargetPosition(300, power);
+    }
+
+    public void reset() {
+        setTargetPosition(1400, 0.4);
+    }
+
+    public void manualDrive(boolean up) {
+        double power = up ? 0.1 : -0.1;
         leftLinearSlide.setPower(power);
-        rightLinearSlide.setPower((power));
+        rightLinearSlide.setPower(power);
     }
 
-    public int[] getPosition(){
-        int[] pos = {leftLinearSlide.getCurrentPosition(), rightLinearSlide.getCurrentPosition()};
-        return pos;
+    public int[] getPosition() {
+        return new int[]{leftLinearSlide.getCurrentPosition(), rightLinearSlide.getCurrentPosition()};
     }
 }

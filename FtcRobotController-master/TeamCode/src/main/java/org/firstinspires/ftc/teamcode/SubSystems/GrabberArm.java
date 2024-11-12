@@ -6,10 +6,14 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
-public class GrabberArm {
+import org.firstinspires.ftc.teamcode.RobotMode;
+
+public class GrabberArm implements Subsystem{
 	private Servo claw = null;
 	private Servo wrist = null;
 	private DcMotorEx arm = null;
+	private Servo actuator = null;
+
 
 	public static final double NEW_P = 2.5;
 	public static final double NEW_I = 0.1;
@@ -19,12 +23,18 @@ public class GrabberArm {
 	public GrabberArm(HardwareMap hm){
 		claw = hm.get(Servo.class, "claw");
 		wrist = hm.get(Servo.class, "wrist");
+		actuator = hm.get(Servo.class, "arm_extender");
 		arm = hm.get(DcMotorEx.class, "arm");
 
 		arm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 		arm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 		arm.setDirection(DcMotorSimple.Direction.REVERSE);
 		arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+	}
+
+	@Override
+	public void runCommand(RobotMode mode) {
+
 	}
 
 	public void openClaw(){
@@ -58,6 +68,8 @@ public class GrabberArm {
         arm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 	}
 
+
+
 	public void setArmPosition(int pos){
 		double power = 0.3;
 		arm.setTargetPosition(pos);
@@ -66,7 +78,16 @@ public class GrabberArm {
 		arm.setPower(power);
 	}
 
-
+	public void extendActuator(double pos){
+		if(pos < 0.17){
+			actuator.setPosition(0.17);
+		} else if (pos > 0.82) {
+			actuator.setPosition(0.82);
+		}else {
+			actuator.setPosition(pos);
+		}
+	}
+	
 	public void manualPower(){
 		arm.setPower(0.05);
 	}
@@ -82,4 +103,6 @@ public class GrabberArm {
 	public double getClaw(){
 		return claw.getPosition();
 	}
+
+
 }
