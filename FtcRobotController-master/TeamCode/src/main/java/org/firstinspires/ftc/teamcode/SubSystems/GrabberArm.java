@@ -61,7 +61,7 @@ public class GrabberArm {
 		arm.setPower(0.1);
 
 		// Switch back to RUN_USING_ENCODER mode
-//        arm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        arm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 	}
 
 	public void setArmPosition(int pos){
