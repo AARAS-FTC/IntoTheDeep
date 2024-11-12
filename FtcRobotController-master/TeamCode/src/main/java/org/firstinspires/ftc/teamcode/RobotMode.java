@@ -9,5 +9,5 @@ public enum RobotMode {
     SCORE_SPECIMEN_HIGH,
     CLIMB_LOW,
     CLIMB_HIGH,
-    DEFAULT
+    DEFAULT,
 }

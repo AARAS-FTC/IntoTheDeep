@@ -15,7 +15,6 @@ public class GrabberArm {
 	public static final double NEW_I = 0.1;
 	public static final double NEW_D = 0.2;
 
-	private GrabberState grabberState = GrabberState.CLOSED;
 
 	public GrabberArm(HardwareMap hm){
 		claw = hm.get(Servo.class, "claw");
@@ -30,17 +29,12 @@ public class GrabberArm {
 
 	public void openClaw(){
 		claw.setPosition(1);
-		grabberState = GrabberState.OPEN;
 	}
 
 	public void closeClaw(){
 		claw.setPosition(0);
-		grabberState = GrabberState.CLOSED;
 	}
 
-	public GrabberState getGrabberState(){
-		return grabberState;
-	}
 
 	public void setWristPosition(double pos){
 		wrist.setPosition(pos + 0.36);
