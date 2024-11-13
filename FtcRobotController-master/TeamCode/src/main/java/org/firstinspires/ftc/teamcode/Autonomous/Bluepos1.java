@@ -4,10 +4,6 @@ import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-package org.firstinspires.ftc.teamcode;
-
-import androidx.annotation.NonNull;
-
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
@@ -30,7 +26,7 @@ import org.firstinspires.ftc.teamcode.MecanumDrive;
 
 @Config
 @Autonomous(name = "Bluepos1", group = "Autonomous")
-public class Bluepos1 extends LinearOpMode {`
+public class Bluepos1 extends LinearOpMode {
     DeepRobot myRobot;
     FtcDashboard dashboard = FtcDashboard.getInstance();
     Telemetry dashTelemetry = dashboard.getTelemetry();

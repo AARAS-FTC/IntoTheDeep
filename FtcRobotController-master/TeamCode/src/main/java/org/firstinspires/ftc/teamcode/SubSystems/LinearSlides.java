@@ -31,8 +31,8 @@ public class LinearSlides implements Subsystem{
     }
 
     public LinearSlides(HardwareMap hm) {
-        leftLinearSlide = hm.get(DcMotor.class, "l_linear_slides");
-        rightLinearSlide = hm.get(DcMotor.class, "r_linear_slides");
+        leftLinearSlide = hm.get(DcMotor.class, "slideLeft");
+        rightLinearSlide = hm.get(DcMotor.class, "slideRight");
 
         leftLinearSlide.setDirection(DcMotorSimple.Direction.FORWARD);
         rightLinearSlide.setDirection(DcMotorSimple.Direction.REVERSE);

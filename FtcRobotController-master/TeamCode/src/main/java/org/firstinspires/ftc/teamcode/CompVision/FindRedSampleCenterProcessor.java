@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.Testing;
+package org.firstinspires.ftc.teamcode.CompVision;
 
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -11,6 +11,7 @@ import org.opencv.core.Mat;
 import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
 import org.opencv.core.Point;
+import org.openftc.easyopencv.OpenCvPipeline;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -18,7 +19,7 @@ import java.util.Collections;
 import java.util.List;
 
 
-public class FindRedSampleCenterProcessor implements VisionProcessor {
+public class FindRedSampleCenterProcessor extends OpenCvPipeline implements VisionProcessor {
     private final int SAMPLE_PIXEL_LENGTH = 46; // change this to reality
 
     // Define an array to hold the rectangles
@@ -245,6 +246,40 @@ public class FindRedSampleCenterProcessor implements VisionProcessor {
 
         return Collections.max(directionArray);
 
+    }
+
+    @Override
+    public Mat processFrame(Mat input) {
+        // Convert the frame to the HSV color space
+        Mat hsvFrame = new Mat();
+        Imgproc.cvtColor(input, hsvFrame, Imgproc.COLOR_RGB2HSV);
+
+        // Define the HSV range for red
+        Scalar lowerRed1 = new Scalar(0, 100, 100);
+        Scalar upperRed1 = new Scalar(11, 255, 255);
+        Scalar lowerRed2 = new Scalar(120, 100, 100);
+        Scalar upperRed2 = new Scalar(180, 255, 255);
+
+        // Threshold the HSV image to get only red colors
+        Mat redMask1 = new Mat();
+        Mat redMask2 = new Mat();
+
+        Core.inRange(hsvFrame, lowerRed1, upperRed1, redMask1);
+        Core.inRange(hsvFrame, lowerRed2, upperRed2, redMask2);
+
+        // Combine the red masks and store in class-level redMask
+        Core.addWeighted(redMask1, 1.0, redMask2, 1.0, 0.0, redMask);
+
+        findFirstRedPixel(redMask);
+        if(!centerFound) {
+            findRectOrientation(redMask);
+        }
+
+        Mat filteredFrame = new Mat();
+        Core.bitwise_and(input, input, filteredFrame, redMask);
+
+        // Return the filtered frame for display
+        return filteredFrame;
     }
 
     @Override

@@ -28,6 +28,7 @@ public class WeLoveStemOp extends OpMode {
     private DeepRobot myRobot;
     private Gamepad driverPad;
     private Gamepad operatorPad;
+    private boolean actuatorStat = false;
 
     public void telemetryUpdate(){
         //
@@ -54,9 +55,21 @@ public class WeLoveStemOp extends OpMode {
                 ),
                 -gamepad1.right_stick_x
         ));
+        myRobot.drive.updatePoseEstimate();
+
+        if(gamepad1.a){
+            actuatorStat = false;
+            myRobot.retractActuator();
+        }
+
+        if(gamepad1.b){
+            actuatorStat = true;
+            myRobot.extendActuator();
+        }
 
         myRobot.drive.updatePoseEstimate();
 
+        telemetry.addData("Actuator", actuatorStat);
         telemetry.addData("x", myRobot.drive.pose.position.x);
         telemetry.addData("y", myRobot.drive.pose.position.y);
         telemetry.addData("heading (deg)", Math.toDegrees(myRobot.drive.pose.heading.toDouble()));

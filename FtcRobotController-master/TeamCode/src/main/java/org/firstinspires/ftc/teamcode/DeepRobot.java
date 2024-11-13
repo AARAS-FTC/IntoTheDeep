@@ -58,10 +58,10 @@ public class DeepRobot {
 	}
 
 	private void setDrive(){
-		frontLeft = hardwareMap.get(DcMotorEx.class, "left_front");
-		backLeft = hardwareMap.get(DcMotorEx.class, "left_back");
-		frontRight = hardwareMap.get(DcMotorEx.class, "right_front");
-		backRight = hardwareMap.get(DcMotorEx.class, "right_back");
+		frontLeft = hardwareMap.get(DcMotorEx.class, "frontLeft");
+		backLeft = hardwareMap.get(DcMotorEx.class, "rearLeft");
+		frontRight = hardwareMap.get(DcMotorEx.class, "frontRight");
+		backRight = hardwareMap.get(DcMotorEx.class, "rearRight");
 
 		frontLeft.setDirection(DcMotor.Direction.REVERSE);
 		backLeft.setDirection(DcMotor.Direction.REVERSE);
@@ -186,6 +186,20 @@ public class DeepRobot {
 	public void drivePosition(){
 		driveStop();
 		// TODO Other logic here
+	}
+
+	/**
+	 * bring actuator in
+	 */
+	public void retractActuator(){
+		grabberArm.extendActuator(0);
+	}
+
+	/**
+	 * bring actuator in
+	 */
+	public void extendActuator(){
+		grabberArm.extendActuator(1);
 	}
 
 	/**

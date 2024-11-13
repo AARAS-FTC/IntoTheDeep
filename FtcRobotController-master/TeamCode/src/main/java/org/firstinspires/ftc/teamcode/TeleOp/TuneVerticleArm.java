@@ -3,45 +3,70 @@ package org.firstinspires.ftc.teamcode.TeleOp;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
-//import com.acmerobotics.roadrunner.control.PIDFController;
-//import com.arcrobotics.ftclib.controller.PIDController;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.PIDCoefficients;
+import com.qualcomm.robotcore.util.ElapsedTime;
+
+import org.firstinspires.ftc.teamcode.Utils.PIDFController;
 
 
 //https://www.youtube.com/watch?v=E6H6Nqe6qJo
 @Config
+@TeleOp
 public class TuneVerticleArm extends OpMode {
-//    private PIDController controller;
+    public static double kP = 0.0;
+    public static double kI = 0.0;
+    public static double kD = 0.0;
+    public static double kV = 0.0;
+    public static double kA = 0.0;
+    public static double kStatic = 0.0;
+    public static int targetPosition = 0;
 
-    public static double p = 0, i = 0, d = 0, f = 0;
-    public static int target = 0;
+    private PIDFController pidfController;
+    private DcMotorEx armMotor;
+    private ElapsedTime timer;
 
-    private final double ticks_in_degree = 3895.9 / 360.0;
-
-    private DcMotorEx arm_motor;
+    // Conversion factor from encoder ticks to degrees
+    private final double TICKS_PER_DEGREE = 3895.9 / 360.0;
 
     @Override
     public void init() {
+        // Initialize PIDFController with the PID coefficients and feedforward terms
+        PIDFController.PIDCoefficients pidCoeffs = new PIDFController.PIDCoefficients();
+        pidCoeffs.kP = kP;
+        pidCoeffs.kI = kI;
+        pidCoeffs.kD = kD;
+        pidfController = new PIDFController(pidCoeffs, kV, kA, kStatic,
+                (position, velocity) -> Math.cos(Math.toRadians(position / TICKS_PER_DEGREE)) * kStatic);
 
-//        controller = new PIDController(p, i, d);
-        arm_motor = hardwareMap.get(DcMotorEx.class, "arm_motor");
+        // Hardware initialization
+        armMotor = hardwareMap.get(DcMotorEx.class, "arm");
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
+
+        // Reset integral sum and timer
+        pidfController.reset();
+        timer = new ElapsedTime();
     }
 
     @Override
     public void loop() {
-//        controller.setPID(p, i, d);
-        int armPos =  arm_motor.getCurrentPosition();
-//        double pid = controller.calculate(armPos, target);
-        double ff = Math.cos(Math.toRadians(target / ticks_in_degree)) * f;
+        // Update the PID coefficients in real-time based on dashboard values
+        pidfController.pid.kP = kP;
+        pidfController.pid.kI = kI;
+        pidfController.pid.kD = kD;
+        pidfController.targetPosition = targetPosition;
 
-//        double power = pid + ff;
-//        arm_motor.setPower(power);
+        int armPosition = armMotor.getCurrentPosition();
+        double powerOutput = pidfController.update(armPosition);
 
-        telemetry.addData("position", armPos);
-        telemetry.addData("target", target);
+        // Set motor power
+        armMotor.setPower(powerOutput);
+
+        // Telemetry to monitor and tune PID parameters
+        telemetry.addData("Position", armPosition);
+        telemetry.addData("Target Position", targetPosition);
+        telemetry.addData("Power Output", powerOutput);
         telemetry.update();
     }
 }
