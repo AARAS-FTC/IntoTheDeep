@@ -15,12 +15,12 @@ import org.firstinspires.ftc.teamcode.Utils.PIDFController;
 @Config
 @TeleOp
 public class TuneVerticleArm extends OpMode {
-    public static double kP = 0.0;
+    public static double kP = 0.0009;
     public static double kI = 0.0;
-    public static double kD = 0.0;
-    public static double kV = 0.0;
-    public static double kA = 0.0;
-    public static double kStatic = 0.0;
+    public static double kD = 0.00001;
+    public static double kV = 600;
+    public static double kA = 0.005;
+    public static double kStatic = 0.005;
     public static int targetPosition = 0;
 
     private PIDFController pidfController;

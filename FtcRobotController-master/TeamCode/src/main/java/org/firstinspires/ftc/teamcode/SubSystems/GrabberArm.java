@@ -7,18 +7,26 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.RobotMode;
+import org.firstinspires.ftc.teamcode.Utils.PIDFController;
 
 public class GrabberArm implements Subsystem{
+
+	private final double TICKS_PER_DEGREE = 3895.9 / 360.0;
+
 	private Servo claw = null;
 	private Servo wrist = null;
 	private DcMotorEx arm = null;
 	private Servo actuator = null;
 
+	public static double kP = 0.0009;
+	public static double kI = 0.0;
+	public static double kD = 0.00001;
+	public static double kV = 600;
+	public static double kA = 0.005;
+	public static double kStatic = 0.005;
+	public int targetPosition = 0;
 
-	public static final double NEW_P = 2.5;
-	public static final double NEW_I = 0.1;
-	public static final double NEW_D = 0.2;
-
+	private PIDFController pidfController;
 
 	public GrabberArm(HardwareMap hm){
 		claw = hm.get(Servo.class, "claw");
@@ -30,6 +38,14 @@ public class GrabberArm implements Subsystem{
 		arm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 		arm.setDirection(DcMotorSimple.Direction.REVERSE);
 		arm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+		PIDFController.PIDCoefficients pidCoeffs = new PIDFController.PIDCoefficients();
+
+		pidCoeffs.kP = kP;
+		pidCoeffs.kI = kI;
+		pidCoeffs.kD = kD;
+		pidfController = new PIDFController(pidCoeffs, kV, kA, kStatic,
+				(position, velocity) -> Math.cos(Math.toRadians(position / TICKS_PER_DEGREE)) * kStatic);
 	}
 
 	@Override
@@ -50,29 +66,27 @@ public class GrabberArm implements Subsystem{
 		wrist.setPosition(pos + 0.36);
 	}
 
-	public void changeArmPosition(int pos){
-		//if arm is at bottom don't move
-		if(pos < 0 && arm.getCurrentPosition() < 0) return;
-
-		double power = 0.3;
-		arm.setTargetPosition(arm.getCurrentPosition() + pos);
-
-		arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-		arm.setPower(power);
-
-		// Stop the motors after reaching the position
-		arm.setPower(0.1);
-
-		// Switch back to RUN_USING_ENCODER mode
-        arm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+	public void setArmTarget(int pos){
+		targetPosition = pos;
 	}
 
+	public void armLoop(){
+		pidfController.pid.kP = kP;
+		pidfController.pid.kI = kI;
+		pidfController.pid.kD = kD;
+		pidfController.targetPosition = targetPosition;
 
+		int armPosition = arm.getCurrentPosition();
+		double powerOutput = pidfController.update(armPosition);
+
+		// Set motor power
+		arm.setPower(powerOutput);
+	}
 
 	public void setArmPosition(int pos){
 		double power = 0.3;
 		arm.setTargetPosition(pos);
+
 
 		arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 		arm.setPower(power);

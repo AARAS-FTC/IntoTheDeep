@@ -23,8 +23,8 @@ public class DeepRobot {
 	private DcMotorEx backRight = null;
 	private HardwareMap hardwareMap;
 	private Telemetry telemetry;
-	private GrabberArm grabberArm;
-	private LinearSlides linearSlides;
+	public GrabberArm grabberArm;
+	public LinearSlides linearSlides;
 
 	private Pose2d beginPose;
 	public MecanumDrive drive;
@@ -200,6 +200,14 @@ public class DeepRobot {
 	 */
 	public void extendActuator(){
 		grabberArm.extendActuator(1);
+	}
+
+	public void topPosition(){
+		linearSlides.setPosition(1500);
+	}
+
+	public void bottomPosition(){
+		linearSlides.setPosition(100);
 	}
 
 	/**
