@@ -36,6 +36,10 @@ public class WristAction {
         }
     }
 
+    public Action wristStart(){
+        return new WristStart();
+    }
+
     public class WristCollect implements Action{
 
         @Override
@@ -53,6 +57,10 @@ public class WristAction {
                 return true;
             }
         }
+    }
+
+    public Action wristCollect(){
+        return new WristCollect();
     }
 
     public class WristChamberScore implements Action{
@@ -75,6 +83,10 @@ public class WristAction {
         }
     }
 
+    public Action wristChamberScore(){
+        return new WristChamberScore();
+    }
+
     public class WristBasketScore implements Action{
 
         @Override
@@ -94,6 +106,10 @@ public class WristAction {
         }
     }
 
+    public Action wristBasketScore(){
+        return new WristBasketScore();
+    }
+
     public class WristFloorScore implements Action{
 
         @Override
@@ -111,5 +127,9 @@ public class WristAction {
                 return true;
             }
         }
+    }
+
+    public Action wristFloorScore(){
+        return new WristFloorScore();
     }
 }

@@ -30,6 +30,10 @@ public class Constant {
 
     // Actuator Constants
 
+    // Claw Constants
+    public static final double ClawOpen = 0;
+    public static final double ClawClose = 0;
+
     // Auto Drive Distance Constants, at default speed
     public static final double timeToSubFromStart = 0.0;
     public static final double timeToAlignWithSub = 0.0;

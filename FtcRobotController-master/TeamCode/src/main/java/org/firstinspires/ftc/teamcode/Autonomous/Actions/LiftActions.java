@@ -36,6 +36,10 @@ public class LiftActions {
         }
     }
 
+    public Action liftStart(){
+        return new LiftStart();
+    }
+
     public class LiftLowChamber implements Action {
 
         @Override
@@ -52,6 +56,10 @@ public class LiftActions {
                 return false;
             }
         }
+    }
+
+    public Action liftLowChamber(){
+        return new LiftLowChamber();
     }
 
     public class LiftHighChamber implements Action{
@@ -73,6 +81,10 @@ public class LiftActions {
         }
     }
 
+    public Action liftHighChamber(){
+        return new LiftHighChamber();
+    }
+
     public class LiftLowBasket implements Action{
 
         @Override
@@ -90,6 +102,10 @@ public class LiftActions {
                 return false;
             }
         }
+    }
+
+    public Action liftLowBasket(){
+        return new LiftLowBasket();
     }
 
     public class LiftHighBasket implements Action{
@@ -111,6 +127,10 @@ public class LiftActions {
         }
     }
 
+    public Action liftHighBasket(){
+        return new LiftHighBasket();
+    }
+
     public class LiftLowRung implements Action{
 
         @Override
@@ -130,6 +150,10 @@ public class LiftActions {
         }
     }
 
+    public Action liftLowRung(){
+        return new LiftLowRung();
+    }
+
     public class LiftHighRung implements Action{
 
         @Override
@@ -147,5 +171,9 @@ public class LiftActions {
                 return false;
             }
         }
+    }
+
+    public Action liftHighRung(){
+        return new LiftHighRung();
     }
 }

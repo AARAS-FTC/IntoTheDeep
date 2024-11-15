@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.RobotMode;
+import org.firstinspires.ftc.teamcode.Utils.Constant;
 import org.firstinspires.ftc.teamcode.Utils.PIDFController;
 
 public class GrabberArm implements Subsystem{
@@ -56,11 +57,11 @@ public class GrabberArm implements Subsystem{
 	}
 
 	public void openClaw(){
-		claw.setPosition(1);
+		claw.setPosition(Constant.ClawOpen);
 	} // TODO check if these are the right values
 
 	public void closeClaw(){
-		claw.setPosition(0);
+		claw.setPosition(Constant.ClawClose);
 	}
 
 	public void setWristPosition(double pos){

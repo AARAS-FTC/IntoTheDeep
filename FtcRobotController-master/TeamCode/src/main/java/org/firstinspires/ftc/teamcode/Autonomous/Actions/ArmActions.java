@@ -31,6 +31,10 @@ public class ArmActions {
         }
     }
 
+    public Action armStart(){
+        return new ArmStart();
+    }
+
     public class ArmCollect implements Action {
         @Override
         public boolean run(@NonNull TelemetryPacket telemetryPacket) {
@@ -45,6 +49,10 @@ public class ArmActions {
                 return false;
             }
         }
+    }
+
+    public Action armCollect(){
+        return new ArmCollect();
     }
 
     public class ArmChamberScore implements Action {
@@ -63,6 +71,10 @@ public class ArmActions {
         }
     }
 
+    public Action armChamberScore(){
+        return new ArmChamberScore();
+    }
+
     public class ArmVertical implements Action {
         @Override
         public boolean run(@NonNull TelemetryPacket telemetryPacket) {
@@ -77,6 +89,10 @@ public class ArmActions {
                 return false;
             }
         }
+    }
+
+    public Action armVerticle(){
+        return new ArmVertical();
     }
 
     public class ArmFloorScore implements Action {
@@ -95,6 +111,10 @@ public class ArmActions {
         }
     }
 
+    public Action armFloorScore(){
+        return new ArmFloorScore();
+    }
+
     public class ArmBasketScore implements Action {
         @Override
         public boolean run(@NonNull TelemetryPacket telemetryPacket) {
@@ -111,6 +131,10 @@ public class ArmActions {
         }
     }
 
+    public Action armBasketScore(){
+        return new ArmBasketScore();
+    }
+
     public class ArmClimb implements Action {
         @Override
         public boolean run(@NonNull TelemetryPacket telemetryPacket) {
@@ -125,5 +149,9 @@ public class ArmActions {
                 return false;
             }
         }
+    }
+
+    public Action armClimb(){
+        return new ArmClimb();
     }
 }
