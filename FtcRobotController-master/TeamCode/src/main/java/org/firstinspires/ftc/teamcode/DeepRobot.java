@@ -1,22 +1,17 @@
 package org.firstinspires.ftc.teamcode;
 
-import com.acmerobotics.roadrunner.Pose2d;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.SubSystems.GrabberArm;
 import org.firstinspires.ftc.teamcode.SubSystems.LinearSlides;
-import org.firstinspires.ftc.teamcode.SubSystems.MechanismState;
-import org.firstinspires.ftc.vision.VisionPortal;
 
 public class DeepRobot {
 	//contains all the code for interacting with the robots functions
 	private ElapsedTime runtime = new ElapsedTime();
-	private ElapsedTime mechTimer = new ElapsedTime();
 	private DcMotorEx frontLeft = null;
 	private DcMotorEx backLeft = null;
 	private DcMotorEx frontRight = null;
@@ -25,10 +20,6 @@ public class DeepRobot {
 	private Telemetry telemetry;
 	public GrabberArm grabberArm;
 	public LinearSlides linearSlides;
-
-	private Pose2d beginPose;
-	public MecanumDrive drive;
-	private MechanismState mechanismState = MechanismState.INIT;
 	private final double LOW_SPEED = 0.3;
 	private final double MEDIUM_SPEED = 0.6;
 	private final double HIGH_SPEED = 1.0;
@@ -43,8 +34,6 @@ public class DeepRobot {
 	public DeepRobot(HardwareMap hardwareMap, Telemetry telemetry){
 		this.hardwareMap = hardwareMap;
 		this.telemetry = telemetry;
-		this.beginPose = new Pose2d(0, 0, 0);
-		this.drive = new MecanumDrive(hardwareMap,  beginPose);
 		grabberArm = new GrabberArm(hardwareMap);
 		linearSlides = new LinearSlides(hardwareMap);
 		setDrive();
@@ -79,6 +68,13 @@ public class DeepRobot {
 		backLeft.setTargetPositionTolerance(3);
 	}
 
+	/**
+	 *
+	 * @param axial Forwards and Backwards
+	 * @param lateral Left and Right Strafe
+	 * @param yaw Left and Right rotation
+	 * @return
+	 */
 	public double[] drive(double axial, double lateral, double yaw){
 		double max;
 
@@ -100,19 +96,7 @@ public class DeepRobot {
 			rightBackPower /= max;
 		}
 
-		// check state of mechanism and set speed limit
-		switch (mechanismState) {
-			case PICKUP:
-				currentSpeedLimit = LOW_SPEED;
-			case TOP_POSITION:
-				currentSpeedLimit = LOW_SPEED;
-			case DROP_POSITION:
-				currentSpeedLimit = LOW_SPEED;
-			default:
-				currentSpeedLimit = HIGH_SPEED;
-
-		}
-
+		// TODO check state of mechanism and set speed limit
 		frontLeft.setPower(leftFrontPower * currentSpeedLimit);
 		frontRight.setPower(rightFrontPower * currentSpeedLimit);
 		backLeft.setPower(leftBackPower * currentSpeedLimit);
@@ -120,6 +104,7 @@ public class DeepRobot {
         return new double[]{leftFrontPower, rightFrontPower, leftBackPower, rightBackPower};
 	}
 
+	// DRIVE COMMANDS TO BE USED BY NON RR AUTONOMOUS
 	/**
 	 * Drive forwards for targetSeconds
 	 */
@@ -170,23 +155,119 @@ public class DeepRobot {
 		drive(0, 0, 0);
 	}
 
+
+	// CODE FOR ROBOT MECHANISM CONTROL
 	/**
-	 * position of robot before game has begun
+	 * position of robot before game has begun. Ensure that all motors have been rest and put in the
+	 * right position
+	 *
+	 * THe arm and linear slides should already be in the right position at this point.
 	 */
 	public void startPosition(){
 		driveStop();
 		grabberArm.closeClaw();
-		// TODO Start Position of Robot
-
+		grabberArm.setWristPosition(0); // TODO check this is the right position, change if otherwise
 	}
 
 	/**
-	 * Mechanism position when drive,
+	 * Mechanism position when driving, mainly for autonomous.
 	 */
-	public void drivePosition(){
+	public void driveWithSamplePosition(){
 		driveStop();
-		// TODO Other logic here
+		linearSlides.setPosition(0); // this should already be the position we start in
+		grabberArm.closeClaw();
+		grabberArm.setWristPosition(0); // TODO change to the right values
+		grabberArm.setArmPosition(0); // TODO change to the right values
 	}
+
+	/**
+	 * Mechanism position when attempting to collect a scoring element
+	 */
+	public void collectSamplePosition(){
+		driveStop();
+		grabberArm.setArmPosition(100); // TODO change this so that the arm is completely vertical
+		linearSlides.setPosition(0);
+		grabberArm.setArmPosition(200); //TODO value for arm to the ground
+		grabberArm.openClaw();
+		grabberArm.setWristPosition(1); // TODO change this the right position
+	}
+
+	/**
+	 * Mechanism Position when getting into a position to place sample on the ground.
+	 */
+	public void placeSampleGround(){
+		driveStop();
+		grabberArm.setArmPosition(100); // TODO change this so that the arm is completely vertical
+		linearSlides.setPosition(0);
+		grabberArm.setArmPosition(200); //TODO value for arm to the ground
+		grabberArm.openClaw();
+	}
+
+	/**
+	 * Mechinsism position when getting into a position to score a sample on the low rung.This
+	 * 	 * should be slightly higher than the run. The operator will then drive into position
+	 * 	 * and lower the slides and then open the claw
+	 */
+	public void scoreSampleLowRung(){
+		driveStop();
+		linearSlides.setPosition(500); //TODO add height for low rung
+		grabberArm.setArmPosition(1400); //TODO desired arm position
+		grabberArm.setWristPosition(1);
+	}
+
+	/**
+	 * Mechanism position when getting into a position to score a specimen on the high rung. This
+	 * should be slightly higher than the run. The operator will then drive into position
+	 * and lower the slides and then open the claw
+	 */
+	public void scoreSampleHighRung(){
+		driveStop();
+		linearSlides.setPosition(500); //TODO add height for low rung
+		grabberArm.setArmPosition(1400); //TODO desired arm position
+		grabberArm.setWristPosition(1);
+	}
+
+	/**
+	 * Mech position when scoring in the low basket. See above
+	 */
+	public void scoreSampleLowBasket(){
+		driveStop();
+		linearSlides.setPosition(500); //TODO add height for low rung
+		grabberArm.setArmPosition(1400); //TODO desired arm position
+		grabberArm.setWristPosition(1); //TODO check wrist pos
+	}
+
+	/**
+	 * Mech position when scoring in the high basket. See above for extra details.
+	 */
+	public void scoreSampleHighBasket(){
+		driveStop();
+		linearSlides.setPosition(500); //TODO add height for low rung
+		grabberArm.setArmPosition(1400); //TODO desired arm position
+		grabberArm.setWristPosition(1);
+	}
+
+	/**
+	 * code for climb
+	 */
+	public void raiseToLowChamber(){
+		driveStop();
+		grabberArm.setArmPosition(100); //TODO arm to vertical height
+		linearSlides.setPosition(1400); //TODO set to desired height
+
+	}
+
+	public void raiseToHighChamber(){
+		driveStop();
+		grabberArm.setArmPosition(100); //TODO arm to vertical height
+		linearSlides.setPosition(1400); //TODO set to desired height
+	}
+
+	public void climb(){
+		linearSlides.climb(0.6);
+	}
+
+	// INTAKE MECHANISM CODE. INCLUDES THE ARM MOTOR, LINEAR ACTUATOR, AND CLAW SERVOS.
 
 	/**
 	 * bring actuator in
@@ -202,13 +283,6 @@ public class DeepRobot {
 		grabberArm.extendActuator(1);
 	}
 
-	public void topPosition(){
-		linearSlides.setPosition(1500);
-	}
-
-	public void bottomPosition(){
-		linearSlides.setPosition(100);
-	}
 
 	/**
 	 * update Telemetry

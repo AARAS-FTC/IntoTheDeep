@@ -12,6 +12,9 @@ import org.firstinspires.ftc.teamcode.Utils.PIDFController;
 public class GrabberArm implements Subsystem{
 
 	private final double TICKS_PER_DEGREE = 3895.9 / 360.0;
+	private final double ARM_MAX = 1400; // Todo change this to the actual arm max
+	private final double WRIST_MAX = 5;
+	private final double WRIST_MIN = 0;
 
 	private Servo claw = null;
 	private Servo wrist = null;
@@ -50,20 +53,20 @@ public class GrabberArm implements Subsystem{
 
 	@Override
 	public void runCommand(RobotMode mode) {
-
 	}
 
 	public void openClaw(){
 		claw.setPosition(1);
-	}
+	} // TODO check if these are the right values
 
 	public void closeClaw(){
 		claw.setPosition(0);
 	}
 
-
 	public void setWristPosition(double pos){
-		wrist.setPosition(pos + 0.36);
+		if(pos >= WRIST_MIN && pos <= WRIST_MAX) {
+			wrist.setPosition(pos);
+		}
 	}
 
 	public void setArmTarget(int pos){
@@ -84,22 +87,19 @@ public class GrabberArm implements Subsystem{
 	}
 
 	public void setArmPosition(int pos){
-		double power = 0.3;
-		arm.setTargetPosition(pos);
+		if(pos < ARM_MAX) {
+			double power = 0.3;
+			arm.setTargetPosition(pos);
 
-
-		arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-		arm.setPower(power);
+			arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+			arm.setPower(power);
+		}
 	}
 
 	public void extendActuator(double pos){
 		if(pos < 0.17){
 			actuator.setPosition(0.17);
 		} else actuator.setPosition(Math.min(pos, 0.82));
-	}
-
-	public void manualPower(){
-		arm.setPower(0.05);
 	}
 
 	public int getArm(){
