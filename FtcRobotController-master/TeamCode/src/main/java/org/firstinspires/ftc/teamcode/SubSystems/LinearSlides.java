@@ -10,7 +10,7 @@ public class LinearSlides {
     private DcMotor rightLinearSlide;
 
     private final int MIN_POSITION = 0;
-    private final int MAX_POSITION = 1300; // TODO find the actual max
+    private final int MAX_POSITION = 1400; // TODO find the actual max
 
     public LinearSlides(HardwareMap hm){
         leftLinearSlide = hm.get(DcMotor.class, "slideLeft");

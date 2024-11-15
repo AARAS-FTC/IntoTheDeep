@@ -103,10 +103,10 @@ public class WeLoveStemOp extends OpMode {
             myRobot.driveWithSamplePosition();
         }
         if(driverPad.x){
-            myRobot.raiseToLowChamber();
+            myRobot.raiseToLowRung();
         }
         if(driverPad.b){
-            myRobot.raiseToHighChamber();
+            myRobot.raiseToHighRung();
         }
         if(driverPad.y){
             myRobot.climb();
@@ -123,10 +123,10 @@ public class WeLoveStemOp extends OpMode {
             myRobot.scoreSampleHighBasket();
         }
         if(operatorPad.left_bumper){
-            myRobot.scoreSampleLowRung();
+            myRobot.scoreSampleLowChamber();
         }
         if(operatorPad.right_bumper){
-            myRobot.scoreSampleHighRung();
+            myRobot.scoreSampleHighChamber();
         }
 
         drive.updatePoseEstimate();

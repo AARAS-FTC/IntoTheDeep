@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.SubSystems.GrabberArm;
 import org.firstinspires.ftc.teamcode.SubSystems.LinearSlides;
+import org.firstinspires.ftc.teamcode.Utils.Constant;
 
 public class DeepRobot {
 	//contains all the code for interacting with the robots functions
@@ -109,7 +110,7 @@ public class DeepRobot {
 	 * Drive forwards for targetSeconds
 	 */
 	public void driveForward(){
-		drive(1, 0 ,0);
+		drive(0.6, 0 ,0);
 
 	}
 
@@ -117,21 +118,21 @@ public class DeepRobot {
 	 * Drive backwards for targetSeconds
 	 */
 	public void driveBack(){
-		drive(-1, 0, 0);
+		drive(-0.6, 0, 0);
 	}
 
 	/**
 	 * Rotate left for targetSeconds
 	 */
 	public void turnRight(){
-		drive(0, 0, 1);
+		drive(0, 0, 0.6);
 	}
 
 	/**
 	 * rotate right for targetSeconds
 	 */
 	public void turnLeft(){
-		drive(0, 0, -1);
+		drive(0, 0, -0.6);
 	}
 
 	/**
@@ -165,19 +166,17 @@ public class DeepRobot {
 	 */
 	public void startPosition(){
 		driveStop();
+		linearSlides.setPosition(Constant.LiftStartPosition);
 		grabberArm.closeClaw();
-		grabberArm.setWristPosition(0); // TODO check this is the right position, change if otherwise
+		grabberArm.setArmPosition(Constant.ArmStartPosition);
+		grabberArm.setWristPosition(Constant.ArmStartPosition); // TODO check this is the right position, change if otherwise
 	}
 
 	/**
 	 * Mechanism position when driving, mainly for autonomous.
 	 */
 	public void driveWithSamplePosition(){
-		driveStop();
-		linearSlides.setPosition(0); // this should already be the position we start in
-		grabberArm.closeClaw();
-		grabberArm.setWristPosition(0); // TODO change to the right values
-		grabberArm.setArmPosition(0); // TODO change to the right values
+		startPosition();
 	}
 
 	/**
@@ -185,11 +184,12 @@ public class DeepRobot {
 	 */
 	public void collectSamplePosition(){
 		driveStop();
-		grabberArm.setArmPosition(100); // TODO change this so that the arm is completely vertical
-		linearSlides.setPosition(0);
-		grabberArm.setArmPosition(200); //TODO value for arm to the ground
+//		grabberArm.setArmPosition(Constant.ArmVerticalPosition); // TODO change this so that the arm is completely vertical
+		linearSlides.setPosition(Constant.LiftCollectPosition);
 		grabberArm.openClaw();
-		grabberArm.setWristPosition(1); // TODO change this the right position
+		grabberArm.setWristPosition(Constant.WristCollectPosition); // TODO change this the right position
+		grabberArm.setArmPosition(Constant.ArmCollectPosition); //TODO value for arm to the ground
+
 	}
 
 	/**
@@ -197,10 +197,11 @@ public class DeepRobot {
 	 */
 	public void placeSampleGround(){
 		driveStop();
-		grabberArm.setArmPosition(100); // TODO change this so that the arm is completely vertical
-		linearSlides.setPosition(0);
-		grabberArm.setArmPosition(200); //TODO value for arm to the ground
+//		grabberArm.setArmPosition(Constant.ArmVerticalPosition); // TODO change this so that the arm is completely vertical
+		linearSlides.setPosition(Constant.LiftGroundScorePosition);
 		grabberArm.openClaw();
+		grabberArm.setArmPosition(Constant.ArmFloorScorePosition); //TODO value for arm to the ground
+		grabberArm.setWristPosition(Constant.WristFloorScorePosition); // TODO change this the right position
 	}
 
 	/**
@@ -208,11 +209,11 @@ public class DeepRobot {
 	 * 	 * should be slightly higher than the run. The operator will then drive into position
 	 * 	 * and lower the slides and then open the claw
 	 */
-	public void scoreSampleLowRung(){
+	public void scoreSampleLowChamber(){
 		driveStop();
-		linearSlides.setPosition(500); //TODO add height for low rung
-		grabberArm.setArmPosition(1400); //TODO desired arm position
-		grabberArm.setWristPosition(1);
+		linearSlides.setPosition(Constant.LiftLowChamberPosition); //TODO add height for low rung
+		grabberArm.setArmPosition(Constant.ArmChamberScorePosition); //TODO desired arm position
+		grabberArm.setWristPosition(Constant.WristChamberScorePosition);
 	}
 
 	/**
@@ -220,11 +221,11 @@ public class DeepRobot {
 	 * should be slightly higher than the run. The operator will then drive into position
 	 * and lower the slides and then open the claw
 	 */
-	public void scoreSampleHighRung(){
+	public void scoreSampleHighChamber(){
 		driveStop();
-		linearSlides.setPosition(500); //TODO add height for low rung
-		grabberArm.setArmPosition(1400); //TODO desired arm position
-		grabberArm.setWristPosition(1);
+		linearSlides.setPosition(Constant.LiftHighChamberPosition); //TODO add height for low rung
+		grabberArm.setArmPosition(Constant.ArmChamberScorePosition); //TODO desired arm position
+		grabberArm.setWristPosition(Constant.WristChamberScorePosition);
 	}
 
 	/**
@@ -232,9 +233,9 @@ public class DeepRobot {
 	 */
 	public void scoreSampleLowBasket(){
 		driveStop();
-		linearSlides.setPosition(500); //TODO add height for low rung
-		grabberArm.setArmPosition(1400); //TODO desired arm position
-		grabberArm.setWristPosition(1); //TODO check wrist pos
+		linearSlides.setPosition(Constant.LiftLowBasketPosition);
+		grabberArm.setArmPosition(Constant.ArmBasketScorePosition);
+		grabberArm.setWristPosition(Constant.WristBasketScorePosition);
 	}
 
 	/**
@@ -242,25 +243,25 @@ public class DeepRobot {
 	 */
 	public void scoreSampleHighBasket(){
 		driveStop();
-		linearSlides.setPosition(500); //TODO add height for low rung
-		grabberArm.setArmPosition(1400); //TODO desired arm position
-		grabberArm.setWristPosition(1);
+		linearSlides.setPosition(Constant.LiftHighBasketPosition);
+		grabberArm.setArmPosition(Constant.ArmBasketScorePosition);
+		grabberArm.setWristPosition(Constant.WristBasketScorePosition);
 	}
 
 	/**
 	 * code for climb
 	 */
-	public void raiseToLowChamber(){
+	public void raiseToLowRung(){
 		driveStop();
-		grabberArm.setArmPosition(100); //TODO arm to vertical height
-		linearSlides.setPosition(1400); //TODO set to desired height
+		grabberArm.setArmPosition(Constant.ArmClimbPosition);
+		linearSlides.setPosition(Constant.LiftLowRungPosition);
 
 	}
 
-	public void raiseToHighChamber(){
+	public void raiseToHighRung(){
 		driveStop();
-		grabberArm.setArmPosition(100); //TODO arm to vertical height
-		linearSlides.setPosition(1400); //TODO set to desired height
+		grabberArm.setArmPosition(Constant.ArmClimbPosition);
+		linearSlides.setPosition(Constant.LiftHighRungPosition);
 	}
 
 	public void climb(){
