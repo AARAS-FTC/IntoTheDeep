@@ -111,6 +111,7 @@ public class DeepRobot {
 	 */
 	public void driveForward(){
 		drive(0.6, 0 ,0);
+		sleep(1000);
 
 	}
 
@@ -161,7 +162,6 @@ public class DeepRobot {
 	/**
 	 * position of robot before game has begun. Ensure that all motors have been rest and put in the
 	 * right position
-	 *
 	 * THe arm and linear slides should already be in the right position at this point.
 	 */
 	public void startPosition(){
@@ -169,7 +169,7 @@ public class DeepRobot {
 		linearSlides.setPosition(Constant.LiftStartPosition);
 		grabberArm.closeClaw();
 		grabberArm.setArmPosition(Constant.ArmStartPosition);
-		grabberArm.setWristPosition(Constant.ArmStartPosition); // TODO check this is the right position, change if otherwise
+		grabberArm.setWristPosition(Constant.WristStartPosition); // TODO check this is the right position, change if otherwise
 	}
 
 	/**
