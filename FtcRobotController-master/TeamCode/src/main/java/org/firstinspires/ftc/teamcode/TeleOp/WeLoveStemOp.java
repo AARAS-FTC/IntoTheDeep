@@ -19,6 +19,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.DeepRobot;
 import org.firstinspires.ftc.teamcode.Drawing;
 import org.firstinspires.ftc.teamcode.MecanumDrive;
+import org.firstinspires.ftc.teamcode.SubSystems.LinearSlides;
 
 @Config
 @TeleOp(group = "drive")
@@ -66,67 +67,57 @@ public class WeLoveStemOp extends OpMode {
         /**
          * command to open the claw
          */
-        if(driverPad.left_bumper){
-            myRobot.grabberArm.openClaw();
-        }
+//        if(driverPad.left_bumper){
+//            myRobot.grabberArm.openClaw();
+//        }
         /**
          * command to close claw
          */
-        if(driverPad.right_bumper){
-            myRobot.grabberArm.closeClaw();
-        }
+//        if(driverPad.right_bumper){
+//            myRobot.grabberArm.closeClaw();
+//        }
 
         /**
          * commands to slightly adjust linear slides
          */
-        if(driverPad.dpad_up){
-            myRobot.linearSlides.setPosition(myRobot.linearSlides.getPosition()[0] + 50); // TODO change this variable till it just enough
-        }
-        if(driverPad.dpad_down){
-            myRobot.linearSlides.setPosition(myRobot.linearSlides.getPosition()[0] - 50); // TODO change this variable till it just enough
-        }
+//        if(driverPad.dpad_up){
+//            myRobot.linearSlides.setPosition(myRobot.linearSlides.getPosition()[0] + 50); // TODO change this variable till it just enough
+//        }
+//        if(driverPad.dpad_down){
+//            myRobot.linearSlides.setPosition(myRobot.linearSlides.getPosition()[0] - 50); // TODO change this variable till it just enough
+//        }
 
         /**
          * Commands to slight adjust wrist position
          */
-        if(driverPad.dpad_left){
-            myRobot.grabberArm.setWristPosition(myRobot.grabberArm.getWrist() - 0.2); // TODO change this value as needed
-        }
-        if(driverPad.dpad_right){
-            myRobot.grabberArm.setWristPosition(myRobot.grabberArm.getWrist() + 0.2); // TODO change this value as needed
-        }
+//        if(driverPad.dpad_left){
+////            myRobot.grabberArm.setWristPosition(myRobot.grabberArm.getWrist() - 0.2); // TODO change this value as needed
+//        }
+//        if(driverPad.dpad_right){
+////            myRobot.grabberArm.setWristPosition(myRobot.grabberArm.getWrist() + 0.2); // TODO change this value as needed
+//        }
 
         /**
          * position commands
          */
-        if(driverPad.a){
-            myRobot.driveWithSamplePosition();
-        }
-        if(driverPad.x){
-            myRobot.raiseToLowRung();
-        }
-        if(driverPad.b){
-            myRobot.raiseToHighRung();
-        }
-        if(driverPad.y){
-            myRobot.climb();
-        }
-
         // OPERATOR COMMANDS TODO change mapping as needed
         if(operatorPad.a){
-            myRobot.collectSamplePosition(); // Use this for placing on the ground too
+            myRobot.grabberArm.forward();
         }
-        if(operatorPad.x){
-            myRobot.scoreSampleLowBasket();
+        if(operatorPad.y){
+            myRobot.grabberArm.openClaw();
         }
         if(operatorPad.b){
-            myRobot.scoreSampleHighBasket();
+            myRobot.grabberArm.backward();
         }
-        if(operatorPad.left_bumper){
-            myRobot.scoreSampleLowChamber();
+        if(operatorPad.x){
+            myRobot.grabberArm.closeClaw();
         }
-        if(operatorPad.right_bumper){
-            myRobot.scoreSampleHighChamber();
+        if(operatorPad.dpad_down){
+            myRobot.linearSlides.down();
+        }
+        if(operatorPad.dpad_up){
+            myRobot.linearSlides.up();
         }
 
         drive.updatePoseEstimate();

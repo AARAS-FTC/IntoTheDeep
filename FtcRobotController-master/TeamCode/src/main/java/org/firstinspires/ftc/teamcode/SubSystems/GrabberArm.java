@@ -18,7 +18,7 @@ public class GrabberArm implements Subsystem{
 	private final double WRIST_MIN = 0;
 
 	private Servo claw = null;
-	private Servo wrist = null;
+//	private Servo wrist = null;
 	private DcMotorEx arm = null;
 	private Servo actuator = null;
 
@@ -34,8 +34,7 @@ public class GrabberArm implements Subsystem{
 
 	public GrabberArm(HardwareMap hm){
 		claw = hm.get(Servo.class, "claw");
-		wrist = hm.get(Servo.class, "wrist");
-		actuator = hm.get(Servo.class, "arm_extender");
+		actuator = hm.get(Servo.class, "actuator");
 		arm = hm.get(DcMotorEx.class, "arm");
 
 		arm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -56,22 +55,22 @@ public class GrabberArm implements Subsystem{
 	public void runCommand(RobotMode mode) {
 	}
 
-	public void openClaw(){
-		claw.setPosition(Constant.ClawOpen);
-	} // TODO check if these are the right values
+//	public void openClaw(){
+//		claw.setPosition(Constant.ClawOpen);
+//	} // TODO check if these are the right values
 
 	public void closeClaw(){
 		claw.setPosition(Constant.ClawClose);
 	}
 
-	public void setWristPosition(double pos){
-		if(pos >= WRIST_MIN && pos <= WRIST_MAX) {
-			wrist.setPosition(pos);
-		}
-	}
+//	public void setWristPosition(double pos){
+//		if(pos >= WRIST_MIN && pos <= WRIST_MAX) {
+//			wrist.setPosition(pos);
+//		}
+//	}
 
-	public void setArmTarget(int pos){
-		targetPosition = pos;
+		public void setArmTarget(int pos){
+			targetPosition = pos;
 	}
 
 	public void armLoop(){
@@ -97,19 +96,45 @@ public class GrabberArm implements Subsystem{
 		}
 	}
 
-	public void extendActuator(double pos){
-		if(pos < 0.17){
-			actuator.setPosition(0.17);
-		} else actuator.setPosition(Math.min(pos, 0.82));
+	public void openClaw(){
+		if(claw.getPosition() >= 0){
+			claw.setPosition(Constant.ClawOpen);
+		}
 	}
+
+	public void forward(){
+		arm.setPower(0.7);
+		arm.setTargetPosition(arm.getCurrentPosition() + 50);
+		arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+	}
+
+	public void backward(){
+		arm.setPower(0.7);
+		arm.setTargetPosition(arm.getCurrentPosition() - 50);
+		arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+	}
+
+	public void extend(){
+		actuator.setPosition(500);
+	}
+
+	public void contract(){
+		actuator.setPosition(0);
+	}
+
+//	public void extendActuator(double pos){
+//		if(pos < 0.17){
+//			actuator.setPosition(0.17);
+//		} else actuator.setPosition(Math.min(pos, 0.82));
+//	}
 
 	public int getArm(){
 		return arm.getCurrentPosition();
 	}
 
-	public double getWrist(){
-		return wrist.getPosition();
-	}
+//	public double getWrist(){
+//		return wrist.getPosition();
+//	}
 
 	public double getClaw(){
 		return claw.getPosition();

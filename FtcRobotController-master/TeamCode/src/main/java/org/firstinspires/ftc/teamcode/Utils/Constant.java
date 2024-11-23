@@ -10,7 +10,7 @@ public class Constant {
     public static final int LiftLowBasketPosition = 0;
     public static final int LiftHighBasketPosition = 0;
     public static final int LiftLowRungPosition = 0;
-    public static final int LiftHighRungPosition = 0;
+    public static final int LiftHighRungPosition = 1000;
 
     // Arm Constants
     public static final int ArmStartPosition = 0;
@@ -31,7 +31,7 @@ public class Constant {
     // Actuator Constants
 
     // Claw Constants
-    public static final double ClawOpen = 0;
+    public static final double ClawOpen = 500;
     public static final double ClawClose = 0;
 
     // Auto Drive Distance Constants, at default speed

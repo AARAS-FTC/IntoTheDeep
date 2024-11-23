@@ -1,9 +1,13 @@
 package org.firstinspires.ftc.teamcode.Autonomous;
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.DeepRobot;
 
-
+@Autonomous(name = "pos2", group = "Linear OpMode")
 public class pos2 extends LinearOpMode{
 
     DeepRobot myRobot;
@@ -23,7 +27,7 @@ public class pos2 extends LinearOpMode{
         waitForStart();
         runtime.reset();
 
-        while(opModeIsActive()){
+        while (opModeIsActive()) {
             myRobot.driveForward();
             sleep(1000);
             myRobot.turnLeft();
@@ -44,4 +48,5 @@ public class pos2 extends LinearOpMode{
             sleep(1000);
             myRobot.driveStop();
         }
+    }
 }

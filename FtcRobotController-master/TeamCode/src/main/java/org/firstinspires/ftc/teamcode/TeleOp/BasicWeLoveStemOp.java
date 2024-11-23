@@ -78,10 +78,10 @@ public class BasicWeLoveStemOp extends OpMode {
          * Commands to slight adjust wrist position
          */
         if(driverPad.dpad_left){
-            myRobot.grabberArm.setWristPosition(myRobot.grabberArm.getWrist() - 0.2); // TODO change this value as needed
+//            myRobot.grabberArm.setWristPosition(myRobot.grabberArm.getWrist() - 0.2); // TODO change this value as needed
         }
         if(driverPad.dpad_right){
-            myRobot.grabberArm.setWristPosition(myRobot.grabberArm.getWrist() + 0.2); // TODO change this value as needed
+//            myRobot.grabberArm.setWristPosition(myRobot.grabberArm.getWrist() + 0.2); // TODO change this value as needed
         }
 
         /**

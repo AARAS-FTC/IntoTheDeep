@@ -10,27 +10,23 @@ public class LinearSlides {
     private DcMotor rightLinearSlide;
 
     private final int MIN_POSITION = 0;
-    private final int MAX_POSITION = 1400; // TODO find the actual max
+    private final int MAX_POSITION = 1500;
 
     public LinearSlides(HardwareMap hm){
         leftLinearSlide = hm.get(DcMotor.class, "slideLeft");
         rightLinearSlide = hm.get(DcMotor.class, "slideRight");
+
+        // Set the motors to run with encoders.
+        leftLinearSlide.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightLinearSlide.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         // Reset encoders
         leftLinearSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rightLinearSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         //direction of motors
-        leftLinearSlide.setDirection(DcMotorSimple.Direction.FORWARD);
-        rightLinearSlide.setDirection(DcMotorSimple.Direction.REVERSE);
-
-        // Set the motors to run with encoders.
-        leftLinearSlide.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        rightLinearSlide.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-        // Hold position
-        leftLinearSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        rightLinearSlide.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        leftLinearSlide.setDirection(DcMotorSimple.Direction.REVERSE);
+        rightLinearSlide.setDirection(DcMotorSimple.Direction.FORWARD);
     }
 
     /**
@@ -40,20 +36,43 @@ public class LinearSlides {
      */
     public void setPosition(int pos){
         if(pos >= MIN_POSITION && pos <= MAX_POSITION) {
+            leftLinearSlide.setPower(0.6);
+            rightLinearSlide.setPower(0.6);
+
             leftLinearSlide.setTargetPosition(pos);
             rightLinearSlide.setTargetPosition(pos);
 
             leftLinearSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             rightLinearSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-            leftLinearSlide.setPower(0.8);
-            rightLinearSlide.setPower(0.8);
-
-            // Stop the motors after reaching the position
-            leftLinearSlide.setPower(0.1);
-            rightLinearSlide.setPower(0.1);
         }
     }
+
+    public void up(){
+        leftLinearSlide.setPower(0.6);
+        rightLinearSlide.setPower(0.6);
+
+        if(leftLinearSlide.getCurrentPosition() < MAX_POSITION) {
+            leftLinearSlide.setTargetPosition(leftLinearSlide.getCurrentPosition() + 30);
+            rightLinearSlide.setTargetPosition(rightLinearSlide.getCurrentPosition() + 30);
+
+            leftLinearSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            rightLinearSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        }
+    }
+
+    public void down(){
+        leftLinearSlide.setPower(0.6);
+        rightLinearSlide.setPower(0.6);
+
+        if(leftLinearSlide.getCurrentPosition() > MIN_POSITION){
+            leftLinearSlide.setTargetPosition(leftLinearSlide.getCurrentPosition() - 30);
+            rightLinearSlide.setTargetPosition(rightLinearSlide.getCurrentPosition() - 30);
+
+            leftLinearSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            rightLinearSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        }
+    }
+
 
     public void climb(double power){
         leftLinearSlide.setPower(power);

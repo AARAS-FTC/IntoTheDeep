@@ -111,7 +111,6 @@ public class DeepRobot {
 	 */
 	public void driveForward(){
 		drive(0.6, 0 ,0);
-		sleep(1000);
 
 	}
 
@@ -169,7 +168,7 @@ public class DeepRobot {
 		linearSlides.setPosition(Constant.LiftStartPosition);
 		grabberArm.closeClaw();
 		grabberArm.setArmPosition(Constant.ArmStartPosition);
-		grabberArm.setWristPosition(Constant.WristStartPosition); // TODO check this is the right position, change if otherwise
+//		grabberArm.setWristPosition(Constant.WristStartPosition); // TODO check this is the right position, change if otherwise
 	}
 
 	/**
@@ -187,7 +186,7 @@ public class DeepRobot {
 //		grabberArm.setArmPosition(Constant.ArmVerticalPosition); // TODO change this so that the arm is completely vertical
 		linearSlides.setPosition(Constant.LiftCollectPosition);
 		grabberArm.openClaw();
-		grabberArm.setWristPosition(Constant.WristCollectPosition); // TODO change this the right position
+//		grabberArm.setWristPosition(Constant.WristCollectPosition); // TODO change this the right position
 		grabberArm.setArmPosition(Constant.ArmCollectPosition); //TODO value for arm to the ground
 
 	}
@@ -201,7 +200,7 @@ public class DeepRobot {
 		linearSlides.setPosition(Constant.LiftGroundScorePosition);
 		grabberArm.openClaw();
 		grabberArm.setArmPosition(Constant.ArmFloorScorePosition); //TODO value for arm to the ground
-		grabberArm.setWristPosition(Constant.WristFloorScorePosition); // TODO change this the right position
+//		grabberArm.setWristPosition(Constant.WristFloorScorePosition); // TODO change this the right position
 	}
 
 	/**
@@ -213,7 +212,7 @@ public class DeepRobot {
 		driveStop();
 		linearSlides.setPosition(Constant.LiftLowChamberPosition); //TODO add height for low rung
 		grabberArm.setArmPosition(Constant.ArmChamberScorePosition); //TODO desired arm position
-		grabberArm.setWristPosition(Constant.WristChamberScorePosition);
+//		grabberArm.setWristPosition(Constant.WristChamberScorePosition);
 	}
 
 	/**
@@ -225,7 +224,7 @@ public class DeepRobot {
 		driveStop();
 		linearSlides.setPosition(Constant.LiftHighChamberPosition); //TODO add height for low rung
 		grabberArm.setArmPosition(Constant.ArmChamberScorePosition); //TODO desired arm position
-		grabberArm.setWristPosition(Constant.WristChamberScorePosition);
+//		grabberArm.setWristPosition(Constant.WristChamberScorePosition);
 	}
 
 	/**
@@ -235,7 +234,7 @@ public class DeepRobot {
 		driveStop();
 		linearSlides.setPosition(Constant.LiftLowBasketPosition);
 		grabberArm.setArmPosition(Constant.ArmBasketScorePosition);
-		grabberArm.setWristPosition(Constant.WristBasketScorePosition);
+//		grabberArm.setWristPosition(Constant.WristBasketScorePosition);
 	}
 
 	/**
@@ -245,7 +244,7 @@ public class DeepRobot {
 		driveStop();
 		linearSlides.setPosition(Constant.LiftHighBasketPosition);
 		grabberArm.setArmPosition(Constant.ArmBasketScorePosition);
-		grabberArm.setWristPosition(Constant.WristBasketScorePosition);
+//		grabberArm.setWristPosition(Constant.WristBasketScorePosition);
 	}
 
 	/**
