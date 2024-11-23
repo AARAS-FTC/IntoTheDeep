@@ -165,9 +165,9 @@ public class DeepRobot {
 	 */
 	public void startPosition(){
 		driveStop();
-		linearSlides.setPosition(Constant.LiftStartPosition);
 		grabberArm.closeClaw();
 		grabberArm.setArmPosition(Constant.ArmStartPosition);
+		linearSlides.setPosition(Constant.LiftStartPosition);
 //		grabberArm.setWristPosition(Constant.WristStartPosition); // TODO check this is the right position, change if otherwise
 	}
 

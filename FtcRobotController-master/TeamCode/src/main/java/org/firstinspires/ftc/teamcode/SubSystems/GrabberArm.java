@@ -63,6 +63,12 @@ public class GrabberArm implements Subsystem{
 		claw.setPosition(Constant.ClawClose);
 	}
 
+	public void setarmposition(int pos){
+		arm.setPower(0.7);
+		arm.setTargetPosition(pos);
+		arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+	}
+
 //	public void setWristPosition(double pos){
 //		if(pos >= WRIST_MIN && pos <= WRIST_MAX) {
 //			wrist.setPosition(pos);

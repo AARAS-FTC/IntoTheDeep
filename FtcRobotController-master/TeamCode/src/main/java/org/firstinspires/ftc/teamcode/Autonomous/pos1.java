@@ -29,27 +29,37 @@ public class pos1 extends LinearOpMode {
         runtime.reset();
 
         while(opModeIsActive()){
+            // drive forward just before sumbersible
             myRobot.driveForward();
             sleep(1000);
             myRobot.driveStop();
-            myRobot.scoreSampleHighChamber();
-            myRobot.collectSamplePosition();
+
+            // lift linear slides to high rung
+            myRobot.linearSlides.setPosition(1200);
+
+            // Aligns arm with the high rung
+            myRobot.grabberArm.setArmPosition(1000);
+
+            // Opens claw to place submersible onto high rung
+            myRobot.grabberArm.openClaw();
+
+            // Moves robot back to original position
             myRobot.startPosition();
+
+            // Drive back to start position
             myRobot.driveBack();
-            sleep(10);
-            myRobot.turnLeft();
-            sleep(600);
-            myRobot.driveForward();
-            sleep(4000);
-            myRobot.driveStop();
-            myRobot.scoreSampleHighBasket();
-            myRobot.startPosition();
-            myRobot.turnLeft();
-            sleep(2500);
-            myRobot.driveForward();
-            sleep(4000);
+            sleep(1000);
             myRobot.driveStop();
 
+            // turn right
+            myRobot.turnRight();
+            sleep(450);
+            myRobot.driveStop();
+
+            // forward to parking
+            myRobot.driveForward();
+            sleep(1000);
+            myRobot.driveStop();
         }
     }
 }
